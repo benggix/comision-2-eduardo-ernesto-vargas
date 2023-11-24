@@ -3,6 +3,8 @@ import cors from 'cors'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import { userRouter } from './src/routes/user.routes.js'
+import { config } from "./src/setting/config.js"
+import { startConnection } from "./src/setting/database.js"
 
 const app = express()
 
@@ -24,10 +26,12 @@ app.use('/', (req, res)=> {
 })
 
 
-const PORT = process.env.PORT || 3001
 
 
 // server settings
-app.listen(PORT, ()=> {
-    console.log(`Bienvenido al puerto ${PORT}`);    
-})
+app.listen(config.port, async ()=> {
+    await startConnection();
+    
+    console.log(`Server running on port ${config.port}`);
+  
+  })
