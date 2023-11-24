@@ -13,6 +13,9 @@ app.use(cors())
 app.use(helmet())
 
 
+// midlewares
+app.use(express.json())
+
 // roures
 app.get('/', (req, res)=> {
     res.send('Hello Word')
