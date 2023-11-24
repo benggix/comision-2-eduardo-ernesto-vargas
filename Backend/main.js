@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import helmet from 'helmet'
+import { userRouter } from './src/routes/user.routes.js'
 
 const app = express()
 
@@ -16,10 +17,12 @@ app.use(helmet())
 // midlewares
 app.use(express.json())
 
-// roures
-app.get('/', (req, res)=> {
-    res.send('Hello Word')
+// routes
+app.use('/users', userRouter)
+app.use('/', (req, res)=> {
+    res.send('Bienvenido a la pagina')
 })
+
 
 const PORT = process.env.PORT || 3001
 
