@@ -29,5 +29,5 @@ const postSchema = new Schema({
   },
 });
 
-export const Post = model('Post', postSchema);
+export const PostModel = model('Post', postSchema);
 
