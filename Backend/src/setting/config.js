@@ -3,5 +3,6 @@ dotenv()
 
 export const config = {
     port: process.env.PORT || 4000,                          // EL PORT en mayusculas pq en mi archivo ".env" tenemos "PORT: 3001".
-    mongo_uri: process.env.MONGO_URI 
+    mongo_uri: process.env.MONGO_URI,
+    jwtSecret: process.env.JWT_SECRET, 
 }
