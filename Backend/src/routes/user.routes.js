@@ -1,35 +1,37 @@
 import {Router} from 'express'
 import {authMiddleware} from '../middleware/authentication.js'
+import {registerUser, loginUser,} from "../controllers/user.controller.js";
 import {
-    registerUser,
-    loginUser,
     createPost,
     deletePost,
     getPosts,
+    editPost, } from '../controllers/post.controller.js'
+import {
     createComment,
     deleteComment,
-    editPost,
-    editComment,} from "../controllers/user.controller.js";
+    editComment,} from '../controllers/comment.controller.js'
+
+
 
 const userRouter = Router()
 
 
 // Rutas públicas
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.get('/posts', getPosts);
+userRouter.post('/register', registerUser);
+userRouter.post('/login', loginUser);
+userRouter.get('/posts', getPosts);
 
 // Middleware de autenticación para las rutas privadas
-router.use(authMiddleware);
+userRouter.use(authMiddleware);
 
 
 // Rutas privadas
-router.post('/posts', createPost);
-router.put('/posts/:postId', editPost); // Editar una publicación
-router.delete('/posts/:postId', deletePost);
-router.post('/comments/:postId', createComment);
-router.put('/comments/:commentId', editComment); // Editar un comentario
-router.delete('/comments/:commentId', deleteComment);
+userRouter.post('/posts', createPost);
+userRouter.put('/posts/:postId', editPost); // Editar una publicación
+userRouter.delete('/posts/:postId', deletePost);
+userRouter.post('/comments/:postId', createComment);
+userRouter.put('/comments/:commentId', editComment); // Editar un comentario
+userRouter.delete('/comments/:commentId', deleteComment);
 
 
 export {userRouter}
