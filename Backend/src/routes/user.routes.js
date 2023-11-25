@@ -1,6 +1,5 @@
 import {Router} from 'express'
-
-
+import {authMiddleware} from '../middleware/authentication.js'
 const userRouter = Router()
 
 
@@ -17,6 +16,8 @@ userRouter.get('/posts',  ()=> {
 });
 
 // Middleware de autenticación para las rutas privadas
+router.use(authMiddleware);
+
 
 // Rutas privadas
 userRouter.post('/posts', ()=> {
