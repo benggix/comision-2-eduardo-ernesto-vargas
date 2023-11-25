@@ -1,4 +1,5 @@
 import {CommentPost} from '../models/comment.model'
+import {PostModel} from '../models/post.model'
 
 
 // Controlador para la creación de comentarios
