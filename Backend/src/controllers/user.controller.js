@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import {config} from '../setting/config'
-import {bcrypt} from 'bcrypt'
-import {UserModel} from '../models/user.model'
+import {config} from '../setting/config.js'
+import bcrypt from 'bcrypt'
+import {UserModel} from '../models/user.model.js'
 
 
 
@@ -10,13 +10,13 @@ import {UserModel} from '../models/user.model'
 const registerUser = async (req, res) => {
     try {
       const { username, password, email, avatarURL } = req.body;
-      const hashedPassword = await bcrypt.hash(password, 10);
   
       const newUser = new UserModel({
         username,
-        password: hashedPassword,
+        password,
         email,
         avatarURL,
+        tokens: [], // aca es donde guardaremos el token generado al registrar un usuario
       });
   
       await newUser.save();
@@ -44,6 +44,10 @@ const loginUser = async (req, res) => {
       }
   
       const token = jwt.sign({ userId: user._id }, config.jwtSecret);
+      user.tokens.push({ token });
+
+      await user.save();
+      
       res.status(200).json({ token });
     } catch (error) {
       console.error(error);
