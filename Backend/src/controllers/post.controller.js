@@ -21,7 +21,7 @@ const getPosts = async (req, res) => {
 const createPost = async (req, res) => {
     try {
       const { title, description, imageURL } = req.body;
-      const author = req.user; // Obtener el usuario autenticado desde el middleware de autenticación
+      const author = req.user;          // Obtener el usuario autenticado desde el middleware de autenticación
   
       const newPost = new PostModel({
         title,
