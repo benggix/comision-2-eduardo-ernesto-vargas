@@ -6,8 +6,8 @@ import {UserModel} from '../models/user.model.js'
 
 
 
-// Controlador para el registro de usuarios
-const registerUser = async (req, res) => {
+// Controlador registrar los usuarios
+const ctrlRegisterUser = async (req, res) => {
     try {
       const { username, password, email, avatarURL } = req.body;
   
@@ -27,8 +27,8 @@ const registerUser = async (req, res) => {
     }
   };
 
-// Controlador para el inicio de sesión de usuarios
-const loginUser = async (req, res) => {
+// Controlador para el inicio de sesion de los usuarios
+const ctrlLoginUser = async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await UserModel.findOne({ username });
@@ -56,12 +56,32 @@ const loginUser = async (req, res) => {
   };
 
 
-  
+  // Controlador para cerrar sesión de los usuarios
+const ctrlLogoutUser = async (req, res) => {
+  try {
+      const { user } = req; // Asumiendo que la información del usuario está disponible en el objeto de solicitud (req.user)
+
+      if (!user) {
+          return res.status(401).json({ error: 'No autorizado.' });
+      }
+
+      // Eliminar el token actual de la lista de tokens del usuario
+      user.tokens = user.tokens.filter(tokenObj => tokenObj.token !== req.token);
+
+      await user.save();
+
+      res.status(200).json({ message: 'Sesión cerrada exitosamente.' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al cerrar sesión.' });
+  }
+};
 
   
   
 export {
-    registerUser,
-    loginUser,
+    ctrlRegisterUser,
+    ctrlLoginUser,
+    ctrlLogoutUser,
 
   };
