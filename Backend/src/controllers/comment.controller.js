@@ -19,9 +19,11 @@ const createComment = async (req, res) => {
         description,
         author,
       });
+      
+      await newComment.save(); // nos aseguramos de guardar los comentarios cuando lo creamos
   
-      post.comments.push(newComment);
-      await post.save();
+      post.comments.push(newComment._id); // Luego, agrega el _id del comentario al array comments de la publicación
+      await post.save();                  // Finalmente, guarda la publicación
       res.status(201).json({ message: 'Comentario creado exitosamente.' });
     } catch (error) {
       console.error(error);
