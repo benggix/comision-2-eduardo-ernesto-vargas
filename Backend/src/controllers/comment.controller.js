@@ -35,20 +35,19 @@ const createComment = async (req, res) => {
   const deleteComment = async (req, res) => {
     try {
       const commentId = req.params.commentId;
-      const post = await PostModel.findOne({ 'comments._id': commentId });
+
+      // Encuentra y elimina el comentario directamente
+      const comment = await CommentModel.findOneAndDelete({ _id: commentId });
   
-      if (!post) {
+      if (!comment) {
         return res.status(404).json({ error: 'Comentario no encontrado.' });
       }
   
       // Verificar que el usuario que solicita la eliminación sea el autor del comentario
-      const comment = PostModel.comments.id(commentId);
       if (comment.author.toString() !== req.user._id.toString()) {
         return res.status(403).json({ error: 'No tienes permisos para eliminar este comentario.' });
       }
   
-      comment.remove();
-      await post.save();
       res.status(200).json({ message: 'Comentario eliminado exitosamente.' });
     } catch (error) {
       console.error(error);
@@ -64,7 +63,8 @@ const createComment = async (req, res) => {
       const commentId = req.params.commentId;
       const { description } = req.body;
       
-      const comment = post.comments.id(commentId);
+      // Encuentra y actualiza el comentario directamente
+      const comment = await CommentModel.findById(commentId);
 
       // verificamos q el comentario exista
       if (!comment) {
@@ -78,7 +78,7 @@ const createComment = async (req, res) => {
   
       comment.description = description;
   
-      await post.save();
+      await comment.save();
       res.status(200).json({ message: 'Comentario editado exitosamente.' });
     } catch (error) {
       console.error(error);
