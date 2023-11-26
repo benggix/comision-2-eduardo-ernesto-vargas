@@ -3,7 +3,7 @@ import {PostModel} from '../models/post.model.js'
 
 
 // Controlador para obtener todas las publicaciones
-const getPosts = async (req, res) => {
+const ctrlGetPosts = async (req, res) => {
     try {
       const posts = await PostModel.find().populate('author', 'username avatarURL').populate({
         path: 'comments',
@@ -18,7 +18,7 @@ const getPosts = async (req, res) => {
   };
 
 // Controlador para la creación de publicaciones
-const createPost = async (req, res) => {
+const ctrlCreatePost = async (req, res) => {
     try {
       const { title, description, imageURL } = req.body;
       const author = req.user;          // Obtener el usuario autenticado desde el middleware de autenticación
@@ -40,7 +40,7 @@ const createPost = async (req, res) => {
   };
   
   // Controlador para la eliminación de publicaciones
-  const deletePost = async (req, res) => {
+  const ctrlDeletePost = async (req, res) => {
     try {
       const postId = req.params.postId;
       const post = await PostModel.findById(postId);
@@ -63,7 +63,7 @@ const createPost = async (req, res) => {
   };
 
   // Controlador para la edición de publicaciones (puedes adaptarlo según tus necesidades)
-const editPost = async (req, res) => {
+const ctrlEditPost = async (req, res) => {
     try {
       const postId = req.params.postId;
       const { title, description, imageURL } = req.body;
@@ -93,8 +93,8 @@ const editPost = async (req, res) => {
 
 
   export {
-    getPosts,
-    createPost,
-    deletePost,
-    editPost,
+    ctrlGetPosts,
+    ctrlCreatePost,
+    ctrlDeletePost,
+    ctrlEditPost,
 }

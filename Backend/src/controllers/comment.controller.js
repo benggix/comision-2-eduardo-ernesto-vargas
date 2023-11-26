@@ -3,7 +3,7 @@ import {PostModel} from '../models/post.model.js'
 
 
 // Controlador para la creación de comentarios
-const createComment = async (req, res) => {
+const ctrlCreateComment = async (req, res) => {
     try {
       const { description } = req.body;
       const author = req.user; // Obtener el usuario autenticado desde el middleware de autenticación
@@ -33,7 +33,7 @@ const createComment = async (req, res) => {
   };
   
   // Controlador para la eliminación de comentarios
-  const deleteComment = async (req, res) => {
+  const ctrlDeleteComment = async (req, res) => {
     try {
       const commentId = req.params.commentId;
 
@@ -59,7 +59,7 @@ const createComment = async (req, res) => {
   
   
   // Controlador para la edición de comentarios (puedes adaptarlo según tus necesidades)
-  const editComment = async (req, res) => {
+  const ctrlEditComment = async (req, res) => {
     try {
       const commentId = req.params.commentId;
       const { description } = req.body;
@@ -89,7 +89,7 @@ const createComment = async (req, res) => {
 
 
   export {
-    createComment,
-    deleteComment,
-    editComment,
+    ctrlCreateComment,
+    ctrlDeleteComment,
+    ctrlEditComment,
 }
