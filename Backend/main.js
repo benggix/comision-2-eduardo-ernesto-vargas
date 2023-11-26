@@ -5,6 +5,9 @@ import helmet from 'helmet'
 import { userRouter } from './src/routes/user.routes.js'
 import { config } from "./src/setting/config.js"
 import { startConnection } from "./src/setting/database.js"
+import {authMiddleware} from './src/middleware/authentication.js'
+import { postRouter } from './src/routes/post.routes.js'
+import { commentRouter } from './src/routes/comment.routes.js'
 
 const app = express()
 
@@ -22,6 +25,8 @@ app.use(express.urlencoded({extended: false}))
 
 // routes
 app.use('/users', userRouter)
+app.use('/posts', authMiddleware ,postRouter)
+app.use('/comments', authMiddleware ,commentRouter)
 app.use('/', (req, res)=> {
     res.send('Bienvenido a la pagina')
 })

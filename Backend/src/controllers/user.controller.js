@@ -59,7 +59,7 @@ const ctrlLoginUser = async (req, res) => {
   // Controlador para cerrar sesión de los usuarios
 const ctrlLogoutUser = async (req, res) => {
   try {
-      const { user } = req; // Asumiendo que la información del usuario está disponible en el objeto de solicitud (req.user)
+      const { user } = req; 
 
       if (!user) {
           return res.status(401).json({ error: 'No autorizado.' });
