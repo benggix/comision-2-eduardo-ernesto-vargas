@@ -18,6 +18,7 @@ app.use(helmet())
 
 // midlewares
 app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 
 // routes
 app.use('/users', userRouter)

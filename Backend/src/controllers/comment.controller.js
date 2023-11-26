@@ -10,7 +10,8 @@ const createComment = async (req, res) => {
       const postId = req.params.postId;
   
       const post = await PostModel.findById(postId);
-  
+    
+      // Verificamos q el post en cual queremos comentar exista
       if (!post) {
         return res.status(404).json({ error: 'Publicación no encontrada.' });
       }
