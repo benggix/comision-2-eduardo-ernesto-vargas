@@ -1,5 +1,5 @@
-import {CommentPost} from '../models/comment.model'
-import {PostModel} from '../models/post.model'
+import {CommentModel} from '../models/comment.model.js'
+import {PostModel} from '../models/post.model.js'
 
 
 // Controlador para la creación de comentarios
@@ -15,7 +15,7 @@ const createComment = async (req, res) => {
         return res.status(404).json({ error: 'Publicación no encontrada.' });
       }
   
-      const newComment = new CommentPost({
+      const newComment = new CommentModel({
         description,
         author,
       });
@@ -61,16 +61,15 @@ const createComment = async (req, res) => {
     try {
       const commentId = req.params.commentId;
       const { description } = req.body;
-  
-      const post = await PostModel.findOne({ 'comments._id': commentId });
-  
-      if (!post) {
-        return res.status(404).json({ error: 'Comentario no encontrado.' });
-      }
-  
+      
       const comment = post.comments.id(commentId);
+
+      // verificamos q el comentario exista
+      if (!comment) {
+        return res.status(404).json({ error: 'Comentario no encontrado.' });
+    }
   
-      // Verificar que el usuario que solicita la edición sea el autor del comentario
+      // Verificar para saber si el usuario q intenta editar el comentario sea el propiertario
       if (comment.author.toString() !== req.user._id.toString()) {
         return res.status(403).json({ error: 'No tienes permisos para editar este comentario.' });
       }

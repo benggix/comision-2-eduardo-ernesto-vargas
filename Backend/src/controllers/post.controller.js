@@ -1,4 +1,4 @@
-import {PostModel} from '../models/post.model'
+import {PostModel} from '../models/post.model.js'
 
 
 
@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
         return res.status(403).json({ error: 'No tienes permisos para eliminar esta publicación.' });
       }
   
-      await post.remove();
+      await PostModel.deleteOne({ _id: postId }); 
       res.status(200).json({ message: 'Publicación eliminada exitosamente.' });
     } catch (error) {
       console.error(error);
