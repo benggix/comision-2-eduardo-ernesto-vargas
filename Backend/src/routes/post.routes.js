@@ -9,7 +9,7 @@ import {
 const postRouter = Router();
 
 postRouter.get("/", ctrlGetPosts); // obtener los posts
-postRouter.post("/", ctrlCreatePost); // Crear post
+postRouter.post("/createPost", ctrlCreatePost); // Crear post
 postRouter.put("/:postId", ctrlEditPost); // Editar una publicación
 postRouter.delete("/:postId", ctrlDeletePost); // Eliminar Post
 

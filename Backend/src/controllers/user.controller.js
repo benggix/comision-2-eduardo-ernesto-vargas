@@ -22,11 +22,15 @@ const ctrlRegisterUser = async (req, res) => {
       await newUser.save();
       res.status(201).json({ message: 'Usuario registrado exitosamente.' });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error al registrar el usuario.' });
+      if (error.code === 11000) {
+        // Manejar el error de duplicado (nombre de usuario ya existe)
+        res.status(400).json({ error: 'Nombre de usuario duplicado. Por favor, elija otro.' });
+    } else {
+        console.error(error);
+        res.status(500).json({ error: 'Error al registrar el usuario.' });
     }
-  };
-
+}
+};
 // Controlador para el inicio de sesion de los usuarios
 const ctrlLoginUser = async (req, res) => {
     try {

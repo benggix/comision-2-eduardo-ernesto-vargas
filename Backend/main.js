@@ -23,6 +23,11 @@ app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+// Middleware para manejar solicitudes OPTIONS
+app.options('*', (req, res) => {
+    res.status(200).send();
+  });
+
 // routes
 app.use('/users', userRouter)
 app.use('/posts', authMiddleware ,postRouter)
