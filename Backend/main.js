@@ -30,7 +30,7 @@ app.options('*', (req, res) => {
 
 // routes
 app.use('/users', userRouter)
-app.use('/posts', authMiddleware ,postRouter)
+app.use('/posts' ,postRouter)
 app.use('/comments', authMiddleware ,commentRouter)
 app.use('/', (req, res)=> {
     res.send('Bienvenido a la pagina')
