@@ -52,7 +52,7 @@ const ctrlLoginUser = async (req, res) => {
 
       await user.save();
       
-      res.status(200).json({ token });
+      res.status(200).json({ user, token });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error al iniciar sesión.' });
