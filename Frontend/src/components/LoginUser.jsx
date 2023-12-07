@@ -1,6 +1,6 @@
 import React from "react";
 
-export const LoginUser = () => {
+const LoginUser = () => {
   return (
     <div className="relative bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
       <form className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
@@ -48,3 +48,5 @@ export const LoginUser = () => {
     </div>
   );
 };
+
+export default LoginUser
