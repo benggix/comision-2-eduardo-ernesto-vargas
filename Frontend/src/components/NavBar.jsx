@@ -11,7 +11,7 @@ export const NavBar = () => {
           <div className="flex space-x-4">
             <>
               <span className="text-gray-300 mr-4">¡Hola, username!</span>
-              <button className="hover:text-gray-300 bg-red-500 hover:bg-blue-700 text-white py-2 px-4 rounded cursor-pointer">
+              <button className="hover:text-gray-300 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded cursor-pointer">
                 Cerrar Sesión
               </button>
             </>

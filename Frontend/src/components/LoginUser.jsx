@@ -1,8 +1,24 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 const LoginUser = () => {
   return (
     <div className="relative bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
+      <Link
+        to="/"
+        className="absolute 
+              top-4 
+              left-4 
+              text-white 
+              font-bold 
+              text-xl 
+              bg-red-500 
+              rounded-medium 
+              py-2 
+              px-4
+              shadow-sm"
+      >
+        Volver
+      </Link>
       <form className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
         <h1 className="text-3xl font-bold text-center mb-8">Iniciar Sesión</h1>
 
@@ -49,4 +65,4 @@ const LoginUser = () => {
   );
 };
 
-export default LoginUser
+export default LoginUser;
