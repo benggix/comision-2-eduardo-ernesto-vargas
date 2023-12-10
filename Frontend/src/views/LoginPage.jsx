@@ -1,8 +1,8 @@
 import React from 'react'
-import LoginUser from "../components/LoginUser"
+import LoginForm from "../components/LoginForm"
 
 export const LoginPage = () => {
   return (
-   <LoginUser/>
+   <LoginForm/>
   )
 }
