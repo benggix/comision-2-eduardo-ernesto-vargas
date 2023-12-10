@@ -1,7 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import {API_URL} from "../services/Api.Url"
+import { useRef } from "react";
+
 
 const RegisterUser = () => {
+  const ref = useRef(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // accedemos a los datos del form q el usuario envio y los guardamos
+    const formData = new FormData(event.target); 
+
+    const username = formData.get("username");
+    const password = formData.get("password");
+    const email = formData.get("email");
+    const avatar = formData.get("avatarURL");
+    
+    // guardamos los datos q ingreso el usuario del formulario en un obj
+    const user = {
+      username,
+      password,
+      email,
+      avatar,
+    };
+    
+    // traemos informacion del usuario, lo pasamos al body como format JSON
+    const req = await fetch(`${API_URL}/users/register`, {
+      method: "POST",
+      body: JSON.stringify(user), 
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Si no se cumple la condicion: error
+    if (req.status != 201) return console.error("Hubo un error al registrar el usuario"); 
+    
+    // mandamos al usuario logeado hacia nuestro HomePage
+    navigate("/users/login");
+    // limpiamos los datos ingresados en el form
+    ref.current.reset(); 
+  };
+
   return (
     <div className="relative bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
       <Link
@@ -20,7 +63,7 @@ const RegisterUser = () => {
       >
         Volver
       </Link>
-      <form className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
+      <form  onSubmit={handleSubmit} ref={ref} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
         <h1 className="text-3xl font-bold text-center mb-8">Registrarse</h1>
 
         <div>
