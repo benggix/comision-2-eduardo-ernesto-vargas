@@ -12,16 +12,17 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // accedemos a los datos del form q el usuario envio y los guardamos
     const formData = new FormData(event.target);
 
     const username = formData.get("username");
     const password = formData.get("password");
-
+    // guardamos los datos q ingreso el usuario del formulario en un obj
     const user = {
       username,
       password,
     };
-
+    // traemos informacion del usuario, lo pasamos al body como format JSON
     const req = await fetch(`${API_URL}/users/login`, {
       method: "POST",
       body: JSON.stringify(user),
@@ -30,13 +31,15 @@ const LoginForm = () => {
       },
     });
 
-    if (req.status != 200) return console.error("Error al iniciar sesion"); // manejo de error
+    // Si no se cumple la condicion: error
+    if (req.status != 200) return console.error("Error al iniciar sesion"); 
 
     const res = await req.json();
     login(res);
 
-
-    navigate('/');
+    // mandamos al usuario logeado hacia nuestro HomePage
+    navigate('/');  
+    // limpiamos los datos ingresados en el form
     ref.current.reset();
   };
   return (
