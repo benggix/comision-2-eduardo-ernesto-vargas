@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
 
 export const MainContent = () => {
+  const { auth } = useContext(AuthContext);
+
   return (
     <main className="contenedor mx-auto mt-16 px-4 sm:px-6 lg:px-8">
       <section className="text-center">
@@ -16,12 +19,14 @@ export const MainContent = () => {
           "Ver Posts".
         </p>
         <div className="mt-8">
-          <Link
-            to="/users/register"
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded cursor-pointer mr-2"
-          >
-            ¡EMPECEMOS!
-          </Link>
+          {!auth && (
+            <Link
+              to="/users/register"
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded cursor-pointer mr-2"
+            >
+              ¡EMPECEMOS!
+            </Link>
+          )}
 
           <Link
             to="/posts"
@@ -29,12 +34,15 @@ export const MainContent = () => {
           >
             VER POSTS!
           </Link>
-          <Link
-            to="/posts/createPost"
-            className="bg-green-500 hover:bg-green-700 text-black py-2 px-4 rounded cursor-pointer"
-          >
-            ¡EMPECEMOS A CREAR UN POST!
-          </Link>
+
+          {auth && (
+            <Link
+              to="/posts/createPost"
+              className="bg-green-500 hover:bg-green-700 text-black py-2 px-4 rounded cursor-pointer"
+            >
+              ¡EMPECEMOS A CREAR UN POST!
+            </Link>
+          )}
         </div>
       </section>
 
