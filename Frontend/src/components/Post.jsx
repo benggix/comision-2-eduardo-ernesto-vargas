@@ -47,18 +47,85 @@ export const Post = () => {
     }));
   };
 
-  const handleCommentSubmit = (postId) => {
-    // Lógica para enviar el comentario del post con el ID 'postId'
-    console.log(`Comentario enviado para el post ${postId}:`, commentText);
+  const handleCommentSubmit = async (postId) => {
+    try {
+      // Validar si el comentario está vacío
+      if (!commentText.trim()) {
+        console.error("El comentario no puede estar vacío");
+        return;
+      }
 
-    // Restablecer el estado después de enviar el comentario
-    setCommentText("");
-    toggleCommentForm(postId);
+      // Crear objeto de comentario
+      const newComment = {
+        description: commentText,
+      };
+
+      // Realizar solicitud para agregar el comentario al post
+      const response = await fetch(`${API_URL}/comments/${postId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`, // Incluir el token de autenticación si es necesario
+        },
+        body: JSON.stringify(newComment),
+      });
+
+      if (response.status !== 201) {
+        console.error("Error al enviar el comentario");
+        return;
+      }
+
+      // Obtener la respuesta del servidor (puede contener el comentario creado)
+      const createdComment = await response.json();
+
+      // Obtener información actualizada del usuario después de agregar el comentario
+      const updatedUserInfo = await fetchUserInfo(createdComment.author);
+
+      // Actualizar el estado local antes de realizar la solicitud
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                comments: [
+                  ...post.comments,
+                  {
+                    ...createdComment,
+                    author: updatedUserInfo,
+                  },
+                ],
+              }
+            : post
+        )
+      );
+
+      // Restablecer el estado después de enviar el comentario
+      setCommentText("");
+      toggleCommentForm(postId);
+    } catch (error) {
+      console.error("Error al enviar el comentario:", error);
+    }
   };
+
+  // Función para obtener información actualizada del usuario
+  const fetchUserInfo = async (user) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${user._id}`);
+      if (response.status !== 200) {
+        throw new Error("Hubo un error al obtener la información del usuario");
+      }
+
+      const userInfo = await response.json();
+      return userInfo;
+    } catch (error) {
+      console.error("Error al obtener la información del usuario:", error);
+      return user; // Devolver la información anterior del usuario en caso de error
+    }
+  };
+
   return (
     <div className="bg-gray-700 min-h-screen">
       <div className="max-w-2xl mx-auto mt-8">
-
         {/* Seccion de titulo del post, avatar del autor del post, descripcion del post, username del autor del post y imagen del post */}
         {posts.map((post) => (
           <div
@@ -103,13 +170,13 @@ export const Post = () => {
               </h3>
               <ul>
                 {post.comments &&
-                  post.comments.map((comment) => (
+                  post.comments.map((comment, index) => (
                     <li
-                      key={comment._id}
+                      key={comment?._id || index}
                       className="flex flex-col text-gray-400"
                     >
                       <div className="flex items-center mb-1">
-                        {comment.author && (
+                        {comment?.author && (
                           <img
                             src={comment.author.avatarURL}
                             alt={`Avatar de ${comment.author.username}`}
@@ -117,10 +184,12 @@ export const Post = () => {
                           />
                         )}
                         <span className="font-semibold">
-                          {comment.author.username}
+                          {comment?.author
+                            ? comment.author.username
+                            : "Usuario Desconocido"}
                         </span>
                       </div>
-                      <span>{comment.description}</span>
+                      <span>{comment?.description}</span>
                     </li>
                   ))}
               </ul>
