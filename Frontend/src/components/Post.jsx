@@ -10,32 +10,34 @@ export const Post = () => {
   const { auth } = useContext(AuthContext);
 
   // Efecto para cargar los posts al montar el componente
-  useEffect(() => {
-    // Función asincrónica para realizar la solicitud de los posts
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`${API_URL}/posts`);
-        if (response.status !== 200) {
-          throw new Error("Hubo un error al obtener los posts");
-        }
 
-        const data = await response.json();
-        setPosts(data);
-
-        // Inicializar estados de visibilidad de los formularios de comentarios
-        const initialVisibility = data.reduce(
-          (acc, post) => ({
-            ...acc,
-            [post._id]: false,
-          }),
-          {}
-        );
-        setCommentFormsVisibility(initialVisibility);
-      } catch (error) {
-        console.error("Hubo un error al cargar los posts:", error);
+  // Función asincrónica para realizar la solicitud de los posts
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`${API_URL}/posts`);
+      if (response.status !== 200) {
+        throw new Error("Hubo un error al obtener los posts");
       }
-    };
 
+      const data = await response.json();
+      setPosts(data);
+
+      // Inicializar estados de visibilidad de los formularios de comentarios
+      const initialVisibility = data.reduce(
+        (acc, post) => ({
+          ...acc,
+          [post._id]: false,
+        }),
+        {}
+      );
+      setCommentFormsVisibility(initialVisibility);
+    } catch (error) {
+      console.error("Hubo un error al cargar los posts:", error);
+    }
+  };
+
+  // Efecto para cargar los posts al montar el componente
+  useEffect(() => {
     // Llamada a la función para cargar los posts
     fetchPosts();
   }, []); // El array vacío asegura que este efecto se ejecute solo una vez al montar el componente
@@ -75,51 +77,36 @@ export const Post = () => {
         return;
       }
 
-      // Obtener la respuesta del servidor (puede contener el comentario creado)
-      const createdComment = await response.json();
-
-      // Obtener información actualizada del usuario después de agregar el comentario
-      const updatedUserInfo = await fetchUserInfo(createdComment.author);
-
-      // Actualizar el estado local antes de realizar la solicitud
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                comments: [
-                  ...post.comments,
-                  {
-                    ...createdComment,
-                    author: updatedUserInfo,
-                  },
-                ],
-              }
-            : post
-        )
-      );
-
       // Restablecer el estado después de enviar el comentario
       setCommentText("");
       toggleCommentForm(postId);
+      // Volver a cargar los posts después de enviar el comentario
+      fetchPosts();
     } catch (error) {
       console.error("Error al enviar el comentario:", error);
     }
   };
 
-  // Función para obtener información actualizada del usuario
-  const fetchUserInfo = async (user) => {
+  const handleDeleteComment = async (commentId) => {
     try {
-      const response = await fetch(`${API_URL}/users/${user._id}`);
-      if (response.status !== 200) {
-        throw new Error("Hubo un error al obtener la información del usuario");
-      }
+      // Realizar solicitud para eliminar el comentario
+      const response = await fetch(`${API_URL}/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${auth.token}`, // Incluir el token de autenticación si es necesario
+        },
+      });
 
-      const userInfo = await response.json();
-      return userInfo;
+      if (response.status === 200) {
+        console.log("Comentario eliminado con éxito");
+
+        // Volver a cargar los posts después de eliminar el comentario
+        fetchPosts();
+      } else {
+        console.error("Error al eliminar el comentario");
+      }
     } catch (error) {
-      console.error("Error al obtener la información del usuario:", error);
-      return user; // Devolver la información anterior del usuario en caso de error
+      console.error("Error al eliminar el comentario:", error);
     }
   };
 
@@ -173,7 +160,7 @@ export const Post = () => {
                   post.comments.map((comment, index) => (
                     <li
                       key={comment?._id || index}
-                      className="flex flex-col text-gray-400"
+                      className="flex flex-col text-gray-400 relative"
                     >
                       <div className="flex items-center mb-1">
                         {comment?.author && (
@@ -188,6 +175,18 @@ export const Post = () => {
                             ? comment.author.username
                             : "Usuario Desconocido"}
                         </span>
+                        {auth && comment?.author?._id === auth.user._id && (
+                          <button
+                            onClick={() => handleDeleteComment(comment._id)}
+                            className="text-red-500 font-semibold absolute right-0"
+                            style={{
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            Eliminar
+                          </button>
+                        )}
                       </div>
                       <span>{comment?.description}</span>
                     </li>
