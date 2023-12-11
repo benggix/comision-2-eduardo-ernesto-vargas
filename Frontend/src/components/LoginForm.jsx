@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import {API_URL} from "../services/Api.Url"
-import { useContext, useRef } from "react";
+import { API_URL } from "../services/Api.Url";
+import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
 const LoginForm = () => {
+  const [errorMessage, setErrorMessage] = useState("");
   const ref = useRef(null);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -11,17 +12,17 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // accedemos a los datos del form q el usuario envio y los guardamos
+    // accedemos a los datos del form que el usuario envió y los guardamos
     const formData = new FormData(event.target);
 
     const username = formData.get("username");
     const password = formData.get("password");
-    // guardamos los datos q ingreso el usuario del formulario en un obj
+    // guardamos los datos que ingresó el usuario del formulario en un objeto
     const user = {
       username,
       password,
     };
-    // traemos informacion del usuario, lo pasamos al body como format JSON
+    // traemos información del usuario, la pasamos al body como formato JSON
     const req = await fetch(`${API_URL}/users/login`, {
       method: "POST",
       body: JSON.stringify(user),
@@ -30,18 +31,21 @@ const LoginForm = () => {
       },
     });
 
-    // Si no se cumple la condicion: error
-    if (req.status != 200) return console.error("Error al iniciar sesion"); 
+    // Si no se cumple la condición: error
+    if (req.status !== 200) {
+      setErrorMessage("Datos incorrectos. Asegúrese de que su usuario exista o intente crearse una cuenta.");
+      return console.error("Error al iniciar sesión");
+    }
 
     const res = await req.json();
     login(res);
 
-    // mandamos al usuario logeado hacia la pagina anterior donde estaba
-    navigate(-1);  
+    // mandamos al usuario logeado hacia la página anterior donde estaba
+    navigate("/");
     // limpiamos los datos ingresados en el form
     ref.current.reset();
-
   };
+
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -65,10 +69,15 @@ const LoginForm = () => {
         Volver
       </button>
       <form
-        onSubmit={handleSubmit} ref={ref}
+        onSubmit={handleSubmit}
+        ref={ref}
         className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4"
       >
         <h1 className="text-3xl font-bold text-center mb-8">Iniciar Sesión</h1>
+
+        {errorMessage && (
+          <div className="text-red-500 mb-4 text-center">{errorMessage}</div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
