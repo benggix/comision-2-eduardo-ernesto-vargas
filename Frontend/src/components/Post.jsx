@@ -1,12 +1,13 @@
-import { NavBar } from "./NavBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { API_URL } from "../services/Api.Url";
+import { AuthContext } from "../providers/AuthProvider";
 
 export const Post = () => {
   // Estado para almacenar los posts
   const [posts, setPosts] = useState([]);
   const [commentFormsVisibility, setCommentFormsVisibility] = useState({});
   const [commentText, setCommentText] = useState("");
+  const { auth } = useContext(AuthContext);
 
   // Efecto para cargar los posts al montar el componente
   useEffect(() => {
@@ -54,11 +55,11 @@ export const Post = () => {
     setCommentText("");
     toggleCommentForm(postId);
   };
-
   return (
     <div className="bg-gray-700 min-h-screen">
-      <NavBar />
       <div className="max-w-2xl mx-auto mt-8">
+
+        {/* Seccion de titulo del post, avatar del autor del post, descripcion del post, username del autor del post y imagen del post */}
         {posts.map((post) => (
           <div
             key={post._id}
@@ -79,7 +80,6 @@ export const Post = () => {
                   </div>
                 </div>
               )}
-
               <div>
                 <h1 className="text-lg font-bold mb-2 text-white">
                   Title: {post.title}
@@ -96,7 +96,7 @@ export const Post = () => {
               />
             )}
 
-            {/* Comentarios */}
+            {/* Seccion Comentarios, autor del comentario, avatar del creador del comentario y username del creador del comentario */}
             <div className="mt-4 border-b border-gray-600">
               <h3 className="text-lg font-semibold mb-2 text-white">
                 Comentarios
@@ -127,12 +127,14 @@ export const Post = () => {
             </div>
 
             {/* Botón para expandir/retraer el formulario de comentarios */}
-            <button
-              className="text-blue-500 font-semibold mt-2"
-              onClick={() => toggleCommentForm(post._id)}
-            >
-              Comentar
-            </button>
+            {auth && (
+              <button
+                className="text-blue-500 font-semibold mt-2"
+                onClick={() => toggleCommentForm(post._id)}
+              >
+                Comentar
+              </button>
+            )}
 
             {/* Entrada para comentar */}
             {commentFormsVisibility[post._id] && (

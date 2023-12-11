@@ -25,11 +25,18 @@ export const NavBar = () => {
             >
               Cerrar Sesión
             </button>
+
+            <Link className="hover:text-gray-300 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              to="/posts/createPost"
+            >
+              Crear Post
+            </Link>
           </div>
         ) : (
           <div className="flex space-x-4">
             <Link
-              to={"users/login"}
+              // Si usamos asi, lo q hace es q se mantiene la url donde estas vos y se agrega el users/login, x ejemplo si estoy en http://localhost:5173/posts y tengo esto: to={"users/login"}, me va a mandar a "http://localhost:5173/posts/users/login" y esa no es la direccion
+              to="/users/login" // si usamos el to sin llaves, lo q hace es q me manda a una nueva direccion sin importar en donde estaba parado
               className="hover:text-gray-300 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
             >
               Iniciar sesión
