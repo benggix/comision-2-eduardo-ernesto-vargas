@@ -10,8 +10,6 @@ export const Post = () => {
   const [commentText, setCommentText] = useState("");
   const { auth } = useContext(AuthContext);
 
-  // Efecto para cargar los posts al montar el componente
-
   // Función asincrónica para realizar la solicitud de los posts
   const fetchPosts = async () => {
     try {

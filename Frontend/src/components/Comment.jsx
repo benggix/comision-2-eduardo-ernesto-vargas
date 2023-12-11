@@ -24,21 +24,19 @@ const Comment = ({ comment, handleDeleteComment, handleEditComment }) => {
 
   return (
     <div className="flex flex-col text-gray-400 relative mt-4">
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center">
-          {comment?.author && (
-            <img
-              src={comment.author.avatarURL}
-              alt={`Avatar de ${comment.author.username}`}
-              className="w-6 h-6 rounded-full mr-2"
-            />
-          )}
-          <span className="font-semibold">
-            {comment?.author ? comment.author.username : "Usuario Desconocido"}
-          </span>
-        </div>
-        {comment?.author?._id === auth.user._id && (
-          <div className="flex">
+      <div className="flex items-center mb-1">
+        {comment?.author && (
+          <img
+            src={comment.author.avatarURL}
+            alt={`Avatar de ${comment.author.username}`}
+            className="w-6 h-6 rounded-full mr-2"
+          />
+        )}
+        <span className="font-semibold">
+          {comment?.author ? comment.author.username : "Usuario Desconocido"}
+        </span>
+        {comment?.author?._id === (auth?.user?._id || null) && (
+          <>
             <button
               onClick={() => handleDeleteComment(comment._id)}
               className="text-red-500 font-semibold ml-2"
@@ -68,7 +66,7 @@ const Comment = ({ comment, handleDeleteComment, handleEditComment }) => {
                 Editar
               </button>
             )}
-          </div>
+          </>
         )}
       </div>
       {isEditing ? (
