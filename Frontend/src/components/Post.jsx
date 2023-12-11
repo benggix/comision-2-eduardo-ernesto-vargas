@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { API_URL } from "../services/Api.Url";
 import { AuthContext } from "../providers/AuthProvider";
+import Comment from "../components/Comment";
 
 export const Post = () => {
   // Estado para almacenar los posts
@@ -110,6 +111,28 @@ export const Post = () => {
     }
   };
 
+  const handleEditComment = async (commentId, updatedDescription) => {
+    try {
+      const response = await fetch(`${API_URL}/comments/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify({ description: updatedDescription }),
+      });
+
+      if (response.status === 200) {
+        console.log("Comentario editado con éxito");
+        fetchPosts();
+      } else {
+        console.error("Error al editar el comentario");
+      }
+    } catch (error) {
+      console.error("Error al editar el comentario:", error);
+    }
+  };
+
   return (
     <div className="bg-gray-700 min-h-screen">
       <div className="max-w-2xl mx-auto mt-8">
@@ -117,7 +140,7 @@ export const Post = () => {
         {posts.map((post) => (
           <div
             key={post._id}
-            className="bg-purple-700 p-4 rounded-md shadow-md mb-4"
+            className="bg-purple-900 p-4 rounded-md shadow-md mb-4 relative"
           >
             <div className="mb-4 border-b border-gray-600">
               {post.author && (
@@ -158,38 +181,12 @@ export const Post = () => {
               <ul>
                 {post.comments &&
                   post.comments.map((comment, index) => (
-                    <li
+                    <Comment
                       key={comment?._id || index}
-                      className="flex flex-col text-gray-400 relative"
-                    >
-                      <div className="flex items-center mb-1">
-                        {comment?.author && (
-                          <img
-                            src={comment.author.avatarURL}
-                            alt={`Avatar de ${comment.author.username}`}
-                            className="w-6 h-6 rounded-full mr-2"
-                          />
-                        )}
-                        <span className="font-semibold">
-                          {comment?.author
-                            ? comment.author.username
-                            : "Usuario Desconocido"}
-                        </span>
-                        {auth && comment?.author?._id === auth.user._id && (
-                          <button
-                            onClick={() => handleDeleteComment(comment._id)}
-                            className="text-red-500 font-semibold absolute right-0"
-                            style={{
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            Eliminar
-                          </button>
-                        )}
-                      </div>
-                      <span>{comment?.description}</span>
-                    </li>
+                      comment={comment}
+                      handleDeleteComment={handleDeleteComment}
+                      handleEditComment={handleEditComment}
+                    />
                   ))}
               </ul>
             </div>
