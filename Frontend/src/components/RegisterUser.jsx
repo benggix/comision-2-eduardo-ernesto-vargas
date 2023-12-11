@@ -1,54 +1,61 @@
-
 import { Link, useNavigate } from "react-router-dom";
-import {API_URL} from "../services/Api.Url"
-import { useRef } from "react";
-
+import { API_URL } from "../services/Api.Url";
+import { useRef, useState } from "react";
 
 const RegisterUser = () => {
   const ref = useRef(null);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // accedemos a los datos del form q el usuario envio y los guardamos
-    const formData = new FormData(event.target); 
+    // accedemos a los datos del form q el usuario envío y los guardamos
+    const formData = new FormData(event.target);
 
     const username = formData.get("username");
     const password = formData.get("password");
     const email = formData.get("email");
     const avatar = formData.get("avatarURL");
-    
-    // guardamos los datos q ingreso el usuario del formulario en un obj
+
+    // guardamos los datos q ingresó el usuario del formulario en un obj
     const user = {
       username,
       password,
       email,
       avatar,
     };
-    
-    // traemos informacion del usuario, lo pasamos al body como format JSON
+
+    // traemos información del usuario, lo pasamos al body como formato JSON
     const req = await fetch(`${API_URL}/users/register`, {
       method: "POST",
-      body: JSON.stringify(user), 
+      body: JSON.stringify(user),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    // Si no se cumple la condicion: error
-    if (req.status != 201) return console.error("Hubo un error al registrar el usuario"); 
-    
+    // Si no se cumple la condición: error
+    if (req.status !== 201) {
+      const res = await req.json();
+      setError(res.error); // Guardar el mensaje de error específico
+      return console.error("Hubo un error al registrar el usuario");
+    }
+
     // mandamos al usuario logeado hacia nuestro HomePage
     navigate("/users/login");
     // limpiamos los datos ingresados en el form
-    ref.current.reset(); 
+    ref.current.reset();
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
   return (
     <div className="relative bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
-      <Link
-        to="/"
+      <button
+        onClick={handleGoBack}
         className="absolute 
               top-4 
               left-4 
@@ -62,9 +69,19 @@ const RegisterUser = () => {
               shadow-sm"
       >
         Volver
-      </Link>
-      <form  onSubmit={handleSubmit} ref={ref} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
+      </button>
+      <form
+        onSubmit={handleSubmit}
+        ref={ref}
+        className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4"
+      >
         <h1 className="text-3xl font-bold text-center mb-8">Registrarse</h1>
+
+        {error && (
+          <div className="text-red-500 font-medium text-center mb-4">
+            {error}
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -120,7 +137,7 @@ const RegisterUser = () => {
         >
           Registrarse!
         </button>
-        
+
         <div className="mt-4 text-black">
           ¿Ya tienes una cuenta?{" "}
           <Link
