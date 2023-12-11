@@ -8,7 +8,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -37,15 +36,20 @@ const LoginForm = () => {
     const res = await req.json();
     login(res);
 
-    // mandamos al usuario logeado hacia nuestro HomePage
-    navigate('/');  
+    // mandamos al usuario logeado hacia la pagina anterior donde estaba
+    navigate(-1);  
     // limpiamos los datos ingresados en el form
     ref.current.reset();
+
   };
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="relative bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
-      <Link
-        to="/"
+      <button
+        onClick={handleGoBack}
         className="absolute 
               top-4 
               left-4 
@@ -59,7 +63,7 @@ const LoginForm = () => {
               shadow-sm"
       >
         Volver
-      </Link>
+      </button>
       <form
         onSubmit={handleSubmit} ref={ref}
         className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md space-y-4"
